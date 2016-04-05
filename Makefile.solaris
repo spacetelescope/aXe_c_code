@@ -1,0 +1,175 @@
+# vim:noet
+
+RELEASE=1.70
+
+OUT = ./bin/
+SRC = ./src/
+IRAFBIN = ../iraf/bin/
+
+CC = gcc
+CCFLAGS = -g -O2  -I/data/axesoft1/include -I/data/axesoft1/wcstools -DHAVE_CONFIG_H -I/data/axesoft1/include
+LDFLAGS = -static -lcfitsio -lnsl -lsocket -lm  -L/data/axesoft1/lib -lcfitsio /data/axesoft1/wcstools/libwcs/libwcs.a -L/data/axesoft1/lib -lgsl -lgslcblas -lm
+
+EXTRA = README install.sh configure config.sub config.guess config.h.in Makefile.in
+
+CSOURCES= $(SRC)spc_driz.c $(SRC)spc_spc.c $(SRC)spc_utils.c $(SRC)spc_sex.c \
+ $(SRC)spc_CD.c $(SRC)trace_conf.c $(SRC)spc_FITScards.c $(SRC)spc_resp.c \
+ $(SRC)disp_conf.c $(SRC)aper_conf.c $(SRC)spc_extract.c $(SRC)spce_is_in.c \
+ $(SRC)spce_sect.c $(SRC)spc_trace_functions.c $(SRC)spce_pathlength.c \
+ $(SRC)aXe_errors.c $(SRC)aXe_utils.c $(SRC)spce_binning.c \
+ $(SRC)spce_output.c $(SRC)spc_wl_calib.c $(SRC)spc_back.c \
+ $(SRC)spc_flatfield.c $(SRC)spc_cfg.c $(SRC)inout_aper.c \
+ $(SRC)spce_fitting.c $(SRC)spce_PET.c $(SRC)aper_check.c \
+ $(SRC)drizzle_utils.c $(SRC)drz2pet_utils.c $(SRC)crossdisp_utils.c \
+ $(SRC)spc_model.c $(SRC)model_utils.c $(SRC)spc_fluxcube.c \
+ $(SRC)spc_optimum.c $(SRC)fringe_conf.c $(SRC)fringe_model.c \ \
+ $(SRC)fringe_utils.c $(SRC)trfit_utils.c $(SRC)lm_eval.c $(SRC)lmmin.c \
+ $(SRC)ipixcorr_utils.c $(SRC)inima_utils.c $(SRC)nicback_utils.c \
+ $(SRC)specmodel_utils.c $(SRC)dirimage_model.c \
+ $(SRC)dlstubs.c
+
+OBJECTS= $(SRC)spc_driz.o $(SRC)spc_spc.o $(SRC)spc_utils.o $(SRC)spc_sex.o \
+ $(SRC)spc_CD.o $(SRC)trace_conf.o $(SRC)spc_FITScards.o $(SRC)spc_resp.o \
+ $(SRC)disp_conf.o $(SRC)aper_conf.o $(SRC)spc_extract.o $(SRC)spce_is_in.o \
+ $(SRC)spce_sect.o $(SRC)spc_trace_functions.o $(SRC)spce_pathlength.o \
+ $(SRC)aXe_errors.o $(SRC)aXe_utils.o $(SRC)spce_binning.o \
+ $(SRC)spce_output.o $(SRC)spc_wl_calib.o $(SRC)spc_back.o \
+ $(SRC)spc_flatfield.o $(SRC)spc_cfg.o $(SRC)inout_aper.o \
+ $(SRC)spce_fitting.o $(SRC)spce_PET.o $(SRC)aper_check.o \
+ $(SRC)drizzle_utils.o $(SRC)drz2pet_utils.o $(SRC)crossdisp_utils.o \
+ $(SRC)spc_model.o $(SRC)model_utils.o $(SRC)spc_fluxcube.o \
+ $(SRC)spc_optimum.o $(SRC)fringe_conf.o $(SRC)fringe_model.o \
+ $(SRC)fringe_utils.o $(SRC)trfit_utils.o $(SRC)lm_eval.o $(SRC)lmmin.o \
+ $(SRC)ipixcorr_utils.o $(SRC)inima_utils.o $(SRC)nicback_utils.o \
+ $(SRC)specmodel_utils.o $(SRC)dirimage_model.o \
+ $(SRC)dlstubs.o
+
+TASKSSRC= $(SRC)aXe_SEX2GOL.c $(SRC)aXe_GOL2AF.c $(SRC)aXe_BE.c \
+	$(SRC)aXe_AF2PET.c $(SRC)aXe_PET2SPC.c $(SRC)aXe_STAMPS.c \
+	$(SRC)aXe_DRZPREP.c $(SRC)aXe_PETCONT.c \
+	$(SRC)aXe_PETFF.c $(SRC)aXe_DRZ2PET.c $(SRC)aXe_GPS.c \
+	$(SRC)aXe_FILET.c $(SRC)aXe_FRIGEN.c $(SRC)aXe_FRINGECORR.c \
+	$(SRC)aXe_TFIT.c $(SRC)aXe_INTPIXCORR.c $(SRC)aXe_PETIPC.c \
+	$(SRC)aXe_NICBACK.c $(SRC)aXe_TEST.c $(SRC)aXe_DIRIMAGE.c
+
+TASKS= $(OUT)aXe_SEX2GOL $(OUT)aXe_GOL2AF $(OUT)aXe_BE $(OUT)aXe_AF2PET\
+	$(OUT)aXe_PET2SPC $(OUT)aXe_STAMPS $(OUT)aXe_DRZPREP \
+	$(OUT)aXe_PETCONT $(OUT)aXe_PETFF $(OUT)aXe_DRZ2PET $(OUT)aXe_GPS \
+	$(OUT)aXe_FILET $(OUT)aXe_FRIGEN $(OUT)aXe_FRINGECORR $(OUT)aXe_TFIT \
+	$(OUT)aXe_INTPIXCORR $(OUT)aXe_PETIPC $(OUT)aXe_NICBACK $(OUT)aXe_TEST \
+	$(OUT)aXe_DIRIMAGE
+
+HEADERS= $(SRC)*h
+
+DISTRIFILES=$(CSOURCES) $(HEADERS) $(TASKSSRC) Makefile.in testplot.gnu\
+	scandoc default.pl doc/ config.guess config.sub\
+	config.h.in aclocal.m4 configure configure.in INSTALL
+
+.c.o:
+	$(CC) $(CCFLAGS) -c -o $@ $<
+
+default: all
+
+dist: 
+	tar cvf dist$(RELEASE).tar $(TASKS)
+	gzip dist$(RELEASE).tar 
+
+srcdist: 
+	tar cvf aXe-srcdist-$(RELEASE).tar $(HEADERS) $(TASKSSRC) $(CSOURCES) $(EXTRA) $(OUT)
+	gzip aXe-srcdist-$(RELEASE).tar 
+
+spc_testdrive: spc_testdrive.o $(OBJECTS) $(HEADERS)
+	$(CC) -o spc_testdrive $(OBJECTS) spc_testdrive.o $(LDFLAGS)
+
+$(OUT)aXe_SEX2GOL:	$(SRC)aXe_SEX2GOL.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_SEX2GOL $(OBJECTS) $(SRC)aXe_SEX2GOL.o $(LDFLAGS)
+
+$(OUT)aXe_GOL2AF:    $(SRC)aXe_GOL2AF.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_GOL2AF $(OBJECTS) $(SRC)aXe_GOL2AF.o $(LDFLAGS)
+
+$(OUT)aXe_BE:    $(SRC)aXe_BE.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_BE $(OBJECTS) $(SRC)aXe_BE.o $(LDFLAGS)
+
+$(OUT)aXe_AF2PET:	$(SRC)aXe_AF2PET.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_AF2PET $(OBJECTS) $(SRC)aXe_AF2PET.o $(LDFLAGS)
+
+$(OUT)aXe_DRZ2PET:	$(SRC)aXe_DRZ2PET.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_DRZ2PET $(OBJECTS) $(SRC)aXe_DRZ2PET.o $(LDFLAGS)
+
+$(OUT)aXe_PET2SPC:	$(SRC)aXe_PET2SPC.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_PET2SPC $(OBJECTS) $(SRC)aXe_PET2SPC.o $(LDFLAGS)
+
+$(OUT)aXe_STAMPS:	$(SRC)aXe_STAMPS.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_STAMPS $(OBJECTS) $(SRC)aXe_STAMPS.o $(LDFLAGS)
+
+$(OUT)aXe_DRZPREP:	$(SRC)aXe_DRZPREP.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_DRZPREP $(OBJECTS) $(SRC)aXe_DRZPREP.o $(LDFLAGS)
+
+$(OUT)aXe_PETCONT:     $(SRC)aXe_PETCONT.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_PETCONT $(OBJECTS) $(SRC)aXe_PETCONT.o $(LDFLAGS)
+
+$(OUT)aXe_PETFF:     $(SRC)aXe_PETFF.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_PETFF $(OBJECTS) $(SRC)aXe_PETFF.o $(LDFLAGS)
+
+$(OUT)aXe_GPS:     $(SRC)aXe_GPS.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_GPS $(OBJECTS) $(SRC)aXe_GPS.o $(LDFLAGS)
+
+$(OUT)aXe_FILET:     $(SRC)aXe_FILET.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_FILET $(OBJECTS) $(SRC)aXe_FILET.o $(LDFLAGS)
+
+$(OUT)aXe_FRIGEN:     $(SRC)aXe_FRIGEN.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_FRIGEN $(OBJECTS) $(SRC)aXe_FRIGEN.o $(LDFLAGS)
+
+$(OUT)aXe_FRINGECORR: $(SRC)aXe_FRINGECORR.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_FRINGECORR $(OBJECTS) $(SRC)aXe_FRINGECORR.o $(LDFLAGS)
+
+$(OUT)aXe_TFIT: $(SRC)aXe_TFIT.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_TFIT $(OBJECTS) $(SRC)aXe_TFIT.o $(LDFLAGS)
+
+$(OUT)aXe_INTPIXCORR: $(SRC)aXe_INTPIXCORR.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_INTPIXCORR $(OBJECTS) $(SRC)aXe_INTPIXCORR.o $(LDFLAGS)
+
+$(OUT)aXe_PETIPC: $(SRC)aXe_PETIPC.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_PETIPC $(OBJECTS) $(SRC)aXe_PETIPC.o $(LDFLAGS)
+
+$(OUT)aXe_NICBACK: $(SRC)aXe_NICBACK.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_NICBACK $(OBJECTS) $(SRC)aXe_NICBACK.o $(LDFLAGS)
+
+$(OUT)aXe_DIRIMAGE: $(SRC)aXe_DIRIMAGE.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_DIRIMAGE $(OBJECTS) $(SRC)aXe_DIRIMAGE.o $(LDFLAGS)
+
+$(OUT)aXe_TEST: $(SRC)aXe_TEST.o $(OBJECTS) $(HEADERS)
+	$(CC) -o $(OUT)aXe_TEST $(OBJECTS) $(SRC)aXe_TEST.o $(LDFLAGS)
+
+
+
+all: $(TASKS)
+	strip $(TASKS)
+
+clean:
+	-rm -f $(OBJECTS) $(TASKS) $(SRC)*.o 
+
+install:
+	-mv $(TASKS) $(IRAFBIN) 
+
+distclean: clean
+	-rm -f config.cache config.h config.log Makefile
+
+depend:
+	makedepend -s"# Do not delete -- make depend depends on this line" \
+		-- -I. $(CCFLAGS) -- $(CSOURCES)
+
+
+doc: $(HEADERS) $(CSOURCES)
+	perl ./doc/scandoc -p doc/ -i ../doc/default.pl $(CSOURCES) $(HEADERS)
+
+DESTDIR=dist-aXe-$(RELEASE)
+
+distri:
+	autoheader; autoconf
+	if test ! -d $(DESTDIR); then mkdir $(DESTDIR); fi
+	cp -r $(DISTRIFILES) $(DESTDIR)
+	rm $(DESTDIR)/config.h
+	tar -cvf $(DESTDIR).tar $(DESTDIR)
+	-rm $(DESTDIR).tar.gz
+	gzip -9 $(DESTDIR).tar
