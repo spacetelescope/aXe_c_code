@@ -14,10 +14,16 @@ AC_PROG_CC
 AC_PROG_LIBTOOL
 
 # Checks for libraries.
-#AC_ARG_WITH(gsl, [AS_HELP_STRING([--with-gsl], [path to gsl])])
-#AC_ARG_WITH(cfitsio, [AS_HELP_STRING([--with-cfitsio], [path to cfitsio])])
-PKG_CHECK_MODULES([GSL], [gsl >= 1])
-PKG_CHECK_MODULES([CFITSIO], [cfitsio >= 1])
+AC_ARG_WITH(gsl, [AS_HELP_STRING([--with-gsl], [path to gsl])])
+AS_IF([test "x$with_gsl" != "xno"], [
+       GSL="$withval"
+       ])
+
+
+AC_ARG_WITH(cfitsio, [AS_HELP_STRING([--with-cfitsio], [path to cfitsio])])
+AS_IF([test "x$with_cfitsio" != "xno"], [
+       CFITSIO="$withval"
+       ])
 
 AC_ARG_WITH(wcstools, [AS_HELP_STRING([--with-wcstools], [path to wcstools])])
 AS_IF([test "x$with_wcstools" != "xno"], [
@@ -28,21 +34,32 @@ AS_IF([test "x$with_wcstools" != "xno"], [
        WCSTOOLS="$withval"
        ])
 
-if test "x$WCSTOOLS" != "x"; then
-     WCSTOOLS_LIBS="-L$WCSTOOLS/lib -lwcs"
-     WCSTOOLS_CFLAGS="-I$WCSTOOLS/include"
-     CFLAGS="$CFLAGS $WCSTOOLS_CFLAGS"
-     LIBS="$LIBS $WCSTOOLS_LIBS"
-dnl     AC_SEARCH_LIBS([wcsininit], [wcs], [], [
-dnl                     AC_MSG_ERROR([unable to find wcsinit() function])
-dnl                     ])
-dnl     AC_CHECK_HEADERS([wcslib.h wcs.h])
+if test "x$GSL" != "x"; then
+    GSL_LIBS=`$GSL/bin/gsl-config --libs`
+    GSL_CFLAGS=`$GSL/bin/gsl-config --cflags`
 else
-    AC_MSG_ERROR([wtf happened])
+    PKG_CHECK_MODULES([GSL], [gsl >= 1])
 fi
 
+if test "x$CFITSIO" != "x"; then
+    CFITSIO_LIBS="-L$CFITSIO/lib -lcfitsio -lpthread"
+    CFITSIO_CFLAGS="-I$CFITSIO/include"
+else
+    PKG_CHECK_MODULES([CFITSIO], [cfitsio >= 3])
+fi
+
+if test "x$WCSTOOLS" != "x"; then
+    WCSTOOLS_LIBS="-L$WCSTOOLS/lib -lwcs"
+    WCSTOOLS_CFLAGS="-I$WCSTOOLS/include"
+    LDFLAGS="$LDFLAGS $WCSTOOLS_LIBS"
+    CFLAGS="$CFLAGS $WCSTOOLS_CFLAGS"
+else
+    AC_MSG_ERROR([wcstools does not support pkg-config; use --with-wcstools=/path/to/lib])
+fi
+
+
 # Checks for header files.
-AC_CHECK_HEADERS([limits.h stddef.h stdlib.h string.h unistd.h gsl.h])
+AC_CHECK_HEADERS([limits.h stddef.h stdlib.h string.h unistd.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_TYPE_SIZE_T
