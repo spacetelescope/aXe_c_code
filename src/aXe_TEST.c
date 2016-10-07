@@ -22,7 +22,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fitsio.h>
-#include "libwcs/wcs.h"
+#include "wcs.h"
 
 struct WorldCoor *get_wcs_l(char filename[], int hdunum);
 char      *get_fits_header_l(char filename[], int hdunum);
