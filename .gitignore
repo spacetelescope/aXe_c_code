@@ -35,6 +35,7 @@
 *.deps/
 autom4te.cache/
 aclocal.m4
+config/
 config.h
 config.log
 config.status
