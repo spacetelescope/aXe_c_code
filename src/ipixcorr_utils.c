@@ -18,6 +18,7 @@
 #include "aXe_utils.h"
 #include "aXe_errors.h"
 #include "spc_spc.h"
+#include "spce_pathlength.h"
 #include "fringe_conf.h"
 #include "spc_wl_calib.h"
 #include "trfit_utils.h"

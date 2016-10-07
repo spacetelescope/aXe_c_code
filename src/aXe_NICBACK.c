@@ -28,6 +28,7 @@
 #include "inout_aper.h"
 #include "aper_conf.h"
 #include "spc_back.h"
+#include "nicback_utils.h"
 
 #define AXE_IMAGE_PATH "AXE_IMAGE_PATH"
 #define AXE_OUTPUT_PATH "AXE_OUTPUT_PATH"

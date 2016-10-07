@@ -12,6 +12,7 @@
 #include "aXe_grism.h"
 #include <math.h>
 #include <string.h>
+#include <ctype.h>
 #include "drz2pet_utils.h"
 
 

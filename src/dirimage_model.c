@@ -12,6 +12,7 @@
 #include <math.h>
 #include <gsl/gsl_matrix.h>
 #include <gsl/gsl_vector.h>
+#include <gsl/gsl_sort_vector.h>
 #include <gsl/gsl_interp.h>
 #include <gsl/gsl_sort_double.h>
 #include "inout_aper.h"
