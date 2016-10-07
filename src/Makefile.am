@@ -38,8 +38,6 @@ bin_PROGRAMS = aXe_SEX2GOL \
 	       aXe_DIRIMAGE \
 	       aXe_SCALEBCK
 
-
-
 aXe_SEX2GOL_SOURCES = aXe_SEX2GOL.c $(suppl)
 aXe_GOL2AF_SOURCES = aXe_GOL2AF.c $(suppl)
 aXe_AF2PET_SOURCES = aXe_AF2PET.c $(suppl)
