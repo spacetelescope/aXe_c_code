@@ -30,3 +30,18 @@
 
 # Debug files
 *.dSYM/
+
+# Autotools
+*.deps/
+autom4te.cache/
+aclocal.m4
+config.h
+config.log
+config.status
+config.sub
+Makefile
+Makefile.in
+
+
+# Backups
+*~
