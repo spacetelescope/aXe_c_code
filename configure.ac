@@ -54,7 +54,7 @@ if test "x$WCSTOOLS" != "x"; then
     LDFLAGS="$LDFLAGS $WCSTOOLS_LIBS"
     CFLAGS="$CFLAGS $WCSTOOLS_CFLAGS"
 else
-    AC_MSG_ERROR([wcstools does not support pkg-config; use --with-wcstools=/path/to/lib])
+    AC_MSG_ERROR([wcstools does not support pkg-config; use --with-wcstools=/path/to/wcstools])
 fi
 
 
