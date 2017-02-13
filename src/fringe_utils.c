@@ -11,6 +11,8 @@
 #include "aXe_grism.h"
 #include <gsl/gsl_spline.h>
 #include <gsl/gsl_math.h>
+#include <gsl/gsl_sort.h>
+#include <gsl/gsl_sort_vector.h>
 #include "fringe_conf.h"
 #include "fringe_model.h"
 #include "fringe_utils.h"

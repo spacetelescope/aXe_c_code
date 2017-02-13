@@ -11,7 +11,7 @@
 #include <fitsio.h>
 #include <string.h>
 #include "aXe_grism.h"
-#include "libwcs/wcs.h"
+#include "wcs.h"
 #include "aXe_errors.h"
 
 
